@@ -599,12 +599,23 @@ def calculate_flight_times(df):
     # Calculate the non-collection time, 4)
     non_collection_time = round(df.loc[df['start_waypoint'].isna() & ~df['is_turn'], 'delta_time'].sum() / 3600, 4)
 
+    # Calculate collection start and end timestamps
+    collection_df = df.loc[df['start_waypoint'].notna()]
+    if not collection_df.empty:
+        collection_start = collection_df['pi_datetime'].min()
+        collection_end = collection_df['pi_datetime'].max()
+    else:
+        collection_start = None
+        collection_end = None
+
     # Display the calculated times
     return {
         'collection_time': collection_time,
         'non_collection_time': non_collection_time,
         'total_turn_time': total_turn_time,
         'total_flight_time': total_flight_time,
+        'collection_start': collection_start,
+        'collection_end': collection_end,
     }
 
 

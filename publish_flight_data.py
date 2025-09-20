@@ -117,7 +117,9 @@ def rename_columns(df):
         "collection_time": "Collection Time",
         "non_collection_time": "Non Collection Time",
         'total_turn_time': "Total Turn Time",
-        "total_flight_time": "Total Flight Time"
+        "total_flight_time": "Total Flight Time",
+        "collection_start": "Collection Start",
+        "collection_end": "Collection End"
     }
     return df.rename(columns=rename_dict)
 
@@ -132,7 +134,7 @@ def drop_unwanted_columns(df):
 
 def reorder_columns(df):
     final_column_order = [
-        "Date", "Dataset ID", "Collection Time", "Non Collection Time",
+        "Date", "Dataset ID", "Collection Start", "Collection End", "Collection Time", "Non Collection Time",
         "Total Turn Time", "Total Flight Time", "Num of Turns", "Mean Turn Time",
         "Median Turn Time", "Turn Times", "Operational Base Location",
         "Pilot", "Operator", "Uploader", "Aircraft Tail Number", "Flight Vendor"
