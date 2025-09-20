@@ -1,0 +1,62 @@
+Name,Country,State,Time Zone,Time Zone Designator,Airport Designator,Basins,Vendor(s),Sublocations,Main Operating Base,Internet Status,ID,Ground Support
+Amarillo,United States,TX,CT,America/Chicago,KTDW,Permian,API,"01 Hangar,02 Hangar,03 Hangar,Cargo Received",No,Inactive,"4393825000003950050",No
+Bakersfield,United States,CA,PT,America/Los_Angeles,KBFL,"San Joaquin,Los Angeles",KCSI,"01 Hangar,02 Hangar,03 Hangar,Cargo Received",Yes,Inactive,"4393825000000154003",No
+Baton Rouge,United States,LA,CT,America/Chicago,KHDC,Haynesville,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000002075031",No
+Bloomington,United States,IL,CT,America/Chicago,KBMI,Illinois,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000000154047",No
+Blythe,United States,CA,PT,America/Los_Angeles,KBLH,San Joaquin,Insight M,,No,Inactive,"4393825000000154007",No
+Byron,United States,CA,PT,America/Los_Angeles,C83,San Joaquin,Insight M,,No,Inactive,"4393825000000154011",No
+Clinton,United States,OK,CT,America/Chicago,KCLK,"Anadarko,Arkoma",API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000008453172",No
+College Station,United States,TX,CT,America/Chicago,KCLL,Eagle Ford,API,"001 Hangar,002 Hangar,003 Hangar,004 Hangar,Cargo Received",No,Inactive,"4393825000004936023",No
+Conway,United States,AR,CT,America/Chicago,KCXW,"Anadarko,Arkoma",API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000009166034",No
+Corpus Christi,United States,TX,CT,America/Chicago,KCRP,Eagle Ford,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000002041019",No
+Dallas,United States,TX,CT,America/Chicago,KDAL,Barnett,"KCSI,API","01  Hangar,02 Hangar,03 Hangar,04 Hangar,05  Hangar,Cargo Received",No,Inactive,"4393825000000154015",No
+Denton,United States,TX,CT,America/Chicago,KDTO,Barnett,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,05 Hangar,06 Hangar,Cargo Received,01 Upload Station,02 Upload Station,03 Upload Station,04 Upload Station,05 Upload Station",No,Active,"4393825000001486041",No
+Edinburg,United States,TX,CT,America/Chicago,KEBG,Eagle Ford,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000003711023",No
+Edmonton,Canada,,MT,America/Denver,CYEG,Alberta,EnviroTech,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000000154023",No
+Enid,United States,OK,CT,America/Chicago,KWDG,Anadarko,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,05 Hangar,06 Hangar,07 Hangar,08 Hangar,Cargo Received",No,Inactive,"4393825000000154027",No
+Farmington,United States,NM,MT,America/Denver,KFMN,San Juan,"KCSI,API","01 Hangar,02 Hangar,Cargo Received,03 Hangar,04 Hangar",No,Inactive,"4393825000000154031",No
+Feira de Santana,Brazil,,BRT,America/Sao_Paulo,SDIY,Brazil,SAI,,No,Inactive,"4393825000008478020",No
+Fort Smith,United States,AR,CT,America/Chicago,KFSM,Anadarko,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000003731023",No
+Gillette,United States,WY,MT,America/Denver,KGCC,Bakken,KCSI,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000001961019",No
+Glendale,United States,CA,PT,America/Los_Angeles,KBUR,San Joaquin,Insight M,,No,Inactive,"4393825000000154035",No
+Grand Junction,United States,CO,MT,America/Denver,KGJT,"Piceance,Uinta",KCSI,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received,05 Hangar,01 Upload Station,02 Upload Station,03 Upload Station",No,Active,"4393825000000245023",No
+Grande Prairie,Canada,,MT,America/Denver,CYQU,Alberta,EnviroTech,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000007290164",No
+Guaymaral,Colombia,,COT,America/Bogota,SKGY,Colombia,"Atlantic,SAI,Datum","01 Hangar,Cargo Received,02 Hangar,03 Hangar",No,Inactive,"4393825000000154039",No
+Guthrie,United States,OK,CT,America/Chicago,KGOK,Anadarko,API,"01 Hangar,02 Hangar,Cargo Received",No,Inactive,"4393825000001824015",No
+Hobbs,United States,NM,MT,America/Denver,KHOB,Permian,Insight M,,No,Inactive,"4393825000000154043",No
+Hutchinson,United States,KS,CT,America/Chicago,KHUT,Anadarko,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000006710048",No
+Kalamazoo,United States,MI,CT,America/Chicago,KAZO,Michigan,"KCSI,API","001 Hangar,Cargo Received",No,Inactive,"4393825000000568015",No
+Lake Charles,United States,LA,CT,America/Chicago,KLCH,Gulf Coast,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000000818015",No
+Latrobe,United States,PA,ET,America/New_York,KLBE,Appalachian,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000002630031",No
+Liberal,United States,KS,CT,America/Chicago,KLBL,Anadarko,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000000154051",No
+Lufkin,United States,TX,CT,America/Chicago,KLFK,"Eagle Ford,Gulf Coast",API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000002817041",No
+Midland,United States,TX,CT,America/Chicago,K7T7,Permian,API,"Field office  Hangar,Insight H-1 Hangar,Insight H-2 Hangar,Insight H-3 Hangar,Insight H-4 Hangar,Insight H-5 Hangar,Insight H-6 Hangar,Insight H-7 Hangar,Insight H-8 Hangar,Cargo Received,Ready 1 Office,Ready 2 Office,Insight G-3 Hangar,Insight G-5 Hangar,Insight G-1 Hangar,Ready 3  Office,Ready 4  Office,Insight G-7 Hangar,Insight G-6 Hangar,Insight G-2 Hangar",Yes,Active,"4393825000000154055",Yes
+Mineral Wells,United States,TX,CT,America/Chicago,KMWL,Barnett,API,"001 Hangar,002 Hangar,003 Hangar,004 Hangar,Cargo Received",No,Inactive,"4393825000005086023",No
+Neuquen,Argentina,,ART,America/Argentina/Buenos_Aires,SAZN,Neuquen,Aerotec,"01 Hangar,Cargo Received",No,Inactive,"4393825000000154059",No
+New Braunfels,United States,TX,CT,America/Chicago,KBAZ,Eagle Ford,Insight M,,No,Inactive,"4393825000000154063",No
+Odessa,United States,TX,CT,America/Chicago,KODO,Permian,Insight M,"104 Hangar,103 Hangar,102 Hangar,100 Hangar,099 Hangar,098 Hangar,097 Hangar,096 Hangar,095 Hangar,086 Hangar,085 Hangar,070 Hangar,Field Office  Hangar,101 Hangar,Cargo Received",No,Active,"4393825000000154067",Yes
+Oklahoma City,United States,OK,CT,America/Chicago,KHSD,Anadarko,KCSI,"B15-C Hangar,B15-D Hangar,B15-A Hangar,B15-B Hangar,Cargo Received",No,Active,"4393825000000154071",Yes
+Pagosa Springs,United States,CO,MT,America/Denver,KPSO,San Juan,"KCSI,API,Insight M","01 Upload Station,02 Upload Station,03 Upload Station,04 Upload Station,Cargo Received",No,Active,"4393825000001969019",No
+Palo Alto,United States,CA,PT,America/Los_Angeles,KPAO,San Joaquin,KCSI,,No,Inactive,"4393825000000154075",No
+Parma,Italy,,CET,Europe/Rome,LIMP,Italy,CGR,,No,Inactive,"4393825000000154079",No
+Pittsburgh,United States,PA,ET,America/New_York,KAGC,Appalachian,KCSI,"01 Upload Station,02 Upload Station,03 Upload Station,Cargo Received,04 Upload Station,05 Upload Station",No,Active,"4393825000005936040",No
+Pleasanton,United States,TX,CT,America/Chicago,KPEZ,Eagle Ford,API,"01 Hangar,02 Hangar,Cargo Received,03 Hangar,04 Hangar",No,Inactive,"4393825000001906031",No
+Regina,Canada,,CT,America/Chicago,CYQR,Saskatchewan,EnviroTech,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000007290136",No
+Rock Springs,United States,WY,MT,America/Denver,KRKS,"Green River,Wamsutter",KCSI,"Cargo Received,01 Hangar,02 Hangar,03 Hangar,04 Hangar",No,Inactive,"4393825000004075040",No
+Sacramento,United States,CA,PT,America/Los_Angeles,KMHR,"San Joaquin,Sacramento,Salinas",KCSI,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000000154083",No
+San Antonio,United States,TX,CT,America/Chicago,KSSF,Eagle Ford,"KCSI,API","T3-1 Hangar,T3-2 Hangar,Cargo Received",No,Active,"4393825000000154087",No
+San Marcos,United States,TX,CT,America/Chicago,KHSY,Eagle Ford,Insight M,,No,Inactive,"4393825000000154091",No
+Sao Paulo,Brazil,,BRT,America/Sao_Paulo,SBGR,Brazil,SAI,"Hangar01 Hangar,Cargo Received",No,Inactive,"4393825000004426039",No
+Scranton ,United States,PA,ET,America/New_York,KAVP,Appalachian,KCSI,"01 Upload Station,02 Upload Station,03 Upload Station",No,Active,"4393825000005936056",No
+Shreveport,United States,LA,CT,America/Chicago,KDTN,Haynesville,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,05 Hangar,Upload Office Office,Cargo Received,01 Upload Station,02 Upload Station,03 Upload Station,04 Upload Station,05 Upload Station",No,Active,"4393825000000154095",No
+Sorocaba,Brazil,,BRT,America/Sao_Paulo,SDCO,Brazil,SAI,,No,Inactive,"4393825000008478016",No
+Spring,United States,TX,CT,America/Chicago,KDWH,Eagle Ford,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000002075051",No
+State College,United States,PA,ET,America/New_York,KUNV,Appalachian,KCSI,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Active,"4393825000000478007",No
+Sunnyvale,United States,CA,PT,America/Los_Angeles,NA,San Joaquin,Insight M,"Insight M Office Office,Cargo Received",No,Active,"4393825000000154099",No
+Tefe,Brazil,,VET,America/Caracas,SBTF,Brazil,SAI,,No,Inactive,"4393825000008478024",No
+Tracy,United States,CA,PT,America/Los_Angeles,KTCY,San Joaquin,Insight M,"01 Hangar,02 Hangar,Cargo Received",No,Inactive,"4393825000000154103",No
+Vernal,United States,UT,MT,America/Denver,KVEL,Uinta,"KCSI,API","01 Hangar,Cargo Received",No,Inactive,"4393825000000568007",No
+Victoria,United States,TX,CT,America/Chicago,KVCT,Eagle Ford,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000002808011",No
+Watkins,United States,CO,MT,America/Denver,KCFO,DJ,KCSI,"01 Upload Station,02 Upload Station,03 Upload Station,04 Upload Station,05 Upload Station,Cargo Received,01 Hangar,02 Hangar,03 Hangar,04 Hangar",Yes,Active,"4393825000001966023",No
+Wheeling,United States,WV,ET,America/New_York,KHLV,Marcellus,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar",No,Inactive,"4393825000002322033",No
+Williston,United States,ND,CT,America/Chicago,KXWA,Bakken,"KCSI,API","01 Hangar,Cargo Received,02 Hangar,03 Hangar,04 Hangar",No,Inactive,"4393825000000274003",No

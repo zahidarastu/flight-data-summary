@@ -253,9 +253,9 @@ class JiraClient:
         return extracted
 
 
-def get_timezone_from_location(location):
+def get_timezone_from_csv(location):
     """
-    Gets the timezone for a given location using geopy and timezonefinder.
+    Fallback method to get timezone from List Locations.csv
     
     Args:
         location (str): The name of the location (e.g., "College Station, TX").
@@ -264,24 +264,16 @@ def get_timezone_from_location(location):
         str: The timezone string, or None if not found.
     """
     try:
-        # Get coordinates for the location
-        geolocator = Nominatim(user_agent="flight_data_summary")
-        location_details = geolocator.geocode(location)
-        
-        if location_details:
-            latitude = location_details.latitude
-            longitude = location_details.longitude
-            
-            # Get timezone from coordinates
-            tf = TimezoneFinder()
-            timezone_str = tf.timezone_at(lng=longitude, lat=latitude)
-            return timezone_str
-        else:
-            logging.warning(f"Could not find coordinates for location: {location}")
-            return None
-            
+        import csv
+        with open('List_Locations.csv', mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if row['Name'].strip().lower() == location.strip().lower():
+                    return row['Time Zone Designator']
+        logging.warning(f"Timezone not found in CSV for location: {location}")
+        return None
     except Exception as e:
-        logging.warning(f"Error getting timezone for location {location}: {e}")
+        logging.error(f"Error reading CSV for timezone lookup: {e}")
         return None
 
 
@@ -307,7 +299,7 @@ def convert_to_operational_timezone(timestamp, operational_base_location):
             timestamp = timestamp.tz_convert('UTC')
         
         # Get timezone for operational base location
-        timezone_name = get_timezone_from_location(operational_base_location.strip())
+        timezone_name = get_timezone_from_csv(operational_base_location.strip())
         
         if timezone_name:
             local_tz = pytz.timezone(timezone_name)
@@ -688,6 +680,9 @@ def calculate_flight_times(df, ticket_data=None):
     else:
         collection_start = None
         collection_end = None
+
+    collection_start = collection_start.strftime('%Y-%m-%d %H:%M:%S')
+    collection_end = collection_end.strftime('%Y-%m-%d %H:%M:%S')
 
     # Display the calculated times
     return {

@@ -28,9 +28,9 @@ vendor_dict = {
 }
 
 
-def get_timezone_from_location(location):
+def get_timezone_from_csv(location):
     """
-    Gets the timezone for a given location using geopy and timezonefinder.
+    Fallback method to get timezone from List Locations.csv
     
     Args:
         location (str): The name of the location (e.g., "College Station, TX").
@@ -39,22 +39,16 @@ def get_timezone_from_location(location):
         str: The timezone string, or None if not found.
     """
     try:
-        # Get coordinates for the location
-        geolocator = Nominatim(user_agent="flight_data_summary")
-        location_details = geolocator.geocode(location)
-        
-        if location_details:
-            latitude = location_details.latitude
-            longitude = location_details.longitude
-            
-            # Get timezone from coordinates
-            tf = TimezoneFinder()
-            timezone_str = tf.timezone_at(lng=longitude, lat=latitude)
-            return timezone_str
-        else:
-            return None
-            
+        import csv
+        with open('List_Locations.csv', mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if row['Name'].strip().lower() == location.strip().lower():
+                    return row['Time Zone']
+        logging.warning(f"Timezone not found in CSV for location: {location}")
+        return None
     except Exception as e:
+        logging.error(f"Error reading CSV for timezone lookup: {e}")
         return None
 
 
@@ -74,7 +68,7 @@ def add_timezone_column(df):
     
     # Create timezone column by looking up timezone for each location
     df['Timezone'] = df['Operational Base Location'].apply(
-        lambda x: get_timezone_from_location(x) if pd.notna(x) and x else None
+        lambda x: get_timezone_from_csv(x) if pd.notna(x) and x else None
     )
     
     return df
