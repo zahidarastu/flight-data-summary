@@ -12,6 +12,9 @@ import ipywidgets as widgets
 from IPython.display import display
 import re  # for regular expressions
 import seaborn as sns
+import pytz
+from timezonefinder import TimezoneFinder
+from geopy.geocoders import Nominatim
 
 # JIRA API v3 imports
 import requests
@@ -248,6 +251,75 @@ class JiraClient:
                 extracted[field_name] = str(field_value)
         
         return extracted
+
+
+def get_timezone_from_location(location):
+    """
+    Gets the timezone for a given location using geopy and timezonefinder.
+    
+    Args:
+        location (str): The name of the location (e.g., "College Station, TX").
+    
+    Returns:
+        str: The timezone string, or None if not found.
+    """
+    try:
+        # Get coordinates for the location
+        geolocator = Nominatim(user_agent="flight_data_summary")
+        location_details = geolocator.geocode(location)
+        
+        if location_details:
+            latitude = location_details.latitude
+            longitude = location_details.longitude
+            
+            # Get timezone from coordinates
+            tf = TimezoneFinder()
+            timezone_str = tf.timezone_at(lng=longitude, lat=latitude)
+            return timezone_str
+        else:
+            logging.warning(f"Could not find coordinates for location: {location}")
+            return None
+            
+    except Exception as e:
+        logging.warning(f"Error getting timezone for location {location}: {e}")
+        return None
+
+
+def convert_to_operational_timezone(timestamp, operational_base_location):
+    """
+    Convert a UTC timestamp to the timezone of the operational base location.
+    
+    Parameters:
+        timestamp (pd.Timestamp): UTC timestamp to convert
+        operational_base_location (str): Name of the operational base location
+    
+    Returns:
+        pd.Timestamp: Timestamp converted to local timezone, or original timestamp if conversion fails
+    """
+    if pd.isna(timestamp) or not operational_base_location:
+        return timestamp
+    
+    try:
+        # Ensure timestamp is timezone-aware (assume UTC if naive)
+        if timestamp.tz is None:
+            timestamp = timestamp.tz_localize('UTC')
+        elif timestamp.tz != pytz.UTC:
+            timestamp = timestamp.tz_convert('UTC')
+        
+        # Get timezone for operational base location
+        timezone_name = get_timezone_from_location(operational_base_location.strip())
+        
+        if timezone_name:
+            local_tz = pytz.timezone(timezone_name)
+            return timestamp.tz_convert(local_tz)
+        else:
+            # If timezone not found, log warning and return UTC timestamp
+            logging.warning(f"Timezone not found for operational base location: {operational_base_location}. Using UTC.")
+            return timestamp
+            
+    except Exception as e:
+        logging.warning(f"Error converting timestamp to local timezone for {operational_base_location}: {e}")
+        return timestamp
 
 
 def import_flight_track_df(flight_track_archive, input_dataset):
@@ -577,7 +649,7 @@ def calculate_turn_times(df):
         return turn_times
 
 
-def calculate_flight_times(df):
+def calculate_flight_times(df, ticket_data=None):
     df = df.sort_values(by='pi_datetime')
 
     # Ensure 'pitime' is in datetime format for calculations
@@ -602,8 +674,17 @@ def calculate_flight_times(df):
     # Calculate collection start and end timestamps
     collection_df = df.loc[df['start_waypoint'].notna()]
     if not collection_df.empty:
-        collection_start = collection_df['pi_datetime'].min()
-        collection_end = collection_df['pi_datetime'].max()
+        collection_start_utc = collection_df['pi_datetime'].min()
+        collection_end_utc = collection_df['pi_datetime'].max()
+        
+        # Convert to operational base timezone if ticket_data is available
+        if ticket_data and 'Operational Base Location' in ticket_data:
+            operational_base = ticket_data['Operational Base Location']
+            collection_start = convert_to_operational_timezone(collection_start_utc, operational_base)
+            collection_end = convert_to_operational_timezone(collection_end_utc, operational_base)
+        else:
+            collection_start = collection_start_utc
+            collection_end = collection_end_utc
     else:
         collection_start = None
         collection_end = None
@@ -703,7 +784,7 @@ def turn_time_all_datasets(flight_track_archive, turn_time_archive):
             #turn_time_distribution(turn_times)
             
             # Calculate durations
-            durations = calculate_flight_times(df)
+            durations = calculate_flight_times(df, ticket_data)
 
             # Save Intermediate Results
             save_intermediate_results(dataset_id, turn_times, ticket_data, durations, turn_time_archive)

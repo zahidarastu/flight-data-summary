@@ -6,6 +6,8 @@ import credstash
 import json
 import os
 from google.oauth2 import service_account
+from timezonefinder import TimezoneFinder
+from geopy.geocoders import Nominatim
 
 base_dir = '/opt/kairos/flight-data-metrics'
 turn_time_archive = os.path.join(base_dir, 'turn_time_archive')
@@ -24,6 +26,58 @@ vendor_dict = {
     'Atlantic Corp':['HK-4368', 'I-GIFE'],
     'SAI': ['HK-4701', 'HK-4781', 'PT-EGT'],
 }
+
+
+def get_timezone_from_location(location):
+    """
+    Gets the timezone for a given location using geopy and timezonefinder.
+    
+    Args:
+        location (str): The name of the location (e.g., "College Station, TX").
+    
+    Returns:
+        str: The timezone string, or None if not found.
+    """
+    try:
+        # Get coordinates for the location
+        geolocator = Nominatim(user_agent="flight_data_summary")
+        location_details = geolocator.geocode(location)
+        
+        if location_details:
+            latitude = location_details.latitude
+            longitude = location_details.longitude
+            
+            # Get timezone from coordinates
+            tf = TimezoneFinder()
+            timezone_str = tf.timezone_at(lng=longitude, lat=latitude)
+            return timezone_str
+        else:
+            return None
+            
+    except Exception as e:
+        return None
+
+
+def add_timezone_column(df):
+    """
+    Add a timezone column based on the Operational Base Location.
+    
+    Args:
+        df (pd.DataFrame): DataFrame with 'Operational Base Location' column
+    
+    Returns:
+        pd.DataFrame: DataFrame with added 'Timezone' column
+    """
+    if 'Operational Base Location' not in df.columns:
+        df['Timezone'] = None
+        return df
+    
+    # Create timezone column by looking up timezone for each location
+    df['Timezone'] = df['Operational Base Location'].apply(
+        lambda x: get_timezone_from_location(x) if pd.notna(x) and x else None
+    )
+    
+    return df
 
     
 def get_gsheet(CREDSTASH_GOOGLE_API_SECRET_CONFIG_NAME, sheet_name):
@@ -136,7 +190,7 @@ def reorder_columns(df):
     final_column_order = [
         "Date", "Dataset ID", "Collection Start", "Collection End", "Collection Time", "Non Collection Time",
         "Total Turn Time", "Total Flight Time", "Num of Turns", "Mean Turn Time",
-        "Median Turn Time", "Turn Times", "Operational Base Location",
+        "Median Turn Time", "Turn Times", "Operational Base Location", "Timezone",
         "Pilot", "Operator", "Uploader", "Aircraft Tail Number", "Flight Vendor"
     ]
     return df[final_column_order]
@@ -145,6 +199,7 @@ def format_flight_data_df(df, vendor_dict):
     df = rename_columns(df)
     df = add_and_sort_by_date(df)
     df = add_flight_vendor(df, vendor_dict)
+    df = add_timezone_column(df)
     df = drop_unwanted_columns(df)
     df = reorder_columns(df)
     return df
