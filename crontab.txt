@@ -1,0 +1,17 @@
+# Flight Data Summary Crontab Configuration
+# Deploy this on EC2 using: crontab crontab.txt
+
+# Sync vector CSV files daily at 7:01 AM
+1 7 * * * python /home/ubuntu/flight-data-summary/cronsync_vec_csv.py > /home/ubuntu/flight-data-summary/logs/sync_vec.log 2>&1
+
+# Sync bounds GeoJSON files daily at 7:01 AM  
+1 7 * * * python /home/ubuntu/flight-data-summary/cronsync_bounds_geojson.py > /home/ubuntu/flight-data-summary/logs/sync_bounds.log 2>&1
+
+# Calculate turn times daily at 8:15 AM (after sync completes)
+15 8 * * * python /home/ubuntu/flight-data-summary/turn_time_calculation.py > /home/ubuntu/flight-data-summary/logs/turn_time_calc.log 2>&1
+
+# Publish flight data to Google Sheets daily at 10:01 AM
+1 10 * * * python /home/ubuntu/flight-data-summary/publish_flight_data.py > /home/ubuntu/flight-data-summary/logs/publish_flight_data.log 2>&1
+
+# Test JIRA connection weekly on Sundays at 6:00 AM (optional)
+# 0 6 * * 0 python /home/ubuntu/flight-data-summary/turn_time_calculation.py test-jira > /home/ubuntu/flight-data-summary/logs/jira_test.log 2>&1
