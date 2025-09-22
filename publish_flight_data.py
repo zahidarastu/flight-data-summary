@@ -45,10 +45,10 @@ def get_timezone_from_csv(location):
             for row in csv_reader:
                 if row['Name'].strip().lower() == location.strip().lower():
                     return row['Time Zone']
-        logging.warning(f"Timezone not found in CSV for location: {location}")
+        print(f"Timezone not found in CSV for location: {location}")
         return None
     except Exception as e:
-        logging.error(f"Error reading CSV for timezone lookup: {e}")
+        print(f"Error reading CSV for timezone lookup: {e}")
         return None
 
 

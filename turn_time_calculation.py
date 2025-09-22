@@ -503,6 +503,43 @@ def match_track_to_lines(bounds_archive, dataset_id, df):
     return df
     
 
+def remove_overlaps_aggressively(bounds_df):
+    """
+    Aggressively remove overlapping intervals by keeping only the first interval
+    when overlaps are detected and cannot be resolved by simple adjustment.
+    """
+    if len(bounds_df) <= 1:
+        return bounds_df
+    
+    # Sort by start_time to ensure proper order
+    bounds_df = bounds_df.sort_values('start_time').reset_index(drop=True)
+    
+    # Keep track of intervals to keep
+    keep_indices = []
+    last_end_time = -1
+    
+    for i, row in bounds_df.iterrows():
+        start_time = row['start_time']
+        end_time = row['end_time']
+        
+        # Skip invalid intervals where start >= end
+        if start_time >= end_time:
+            continue
+            
+        # If this interval doesn't overlap with the last kept interval, keep it
+        if start_time >= last_end_time:
+            keep_indices.append(i)
+            last_end_time = end_time
+        # Otherwise, skip this interval (aggressive removal)
+    
+    # Return only the non-overlapping intervals
+    result_df = bounds_df.iloc[keep_indices].reset_index(drop=True)
+    
+    # Final validation - ensure no intervals have start >= end
+    result_df = result_df[result_df['start_time'] < result_df['end_time']].reset_index(drop=True)
+    
+    return result_df
+
 def has_overlapping_intervals(bounds_df):
     intervals = pd.IntervalIndex.from_arrays(bounds_df['start_time'], bounds_df['end_time'])
 
@@ -523,11 +560,35 @@ def has_overlapping_intervals(bounds_df):
 def handle_overlapping_indices(bounds_df):
     # Sort by start_time
     bounds_df = bounds_df.sort_values('start_time').reset_index(drop=True)
-    if has_overlapping_intervals(bounds_df):
-        #plot_intervals(bounds_df)
-        
+    
+    # Remove any invalid intervals first (where start >= end)
+    bounds_df = bounds_df[bounds_df['start_time'] < bounds_df['end_time']].reset_index(drop=True)
+    
+    if len(bounds_df) == 0:
+        # Return empty DataFrame with interval column
+        bounds_df['interval'] = pd.IntervalIndex.from_arrays([], [])
+        return bounds_df
+    
+    # Check for overlaps using a simpler method to avoid IntervalIndex issues
+    def has_simple_overlaps(df):
+        if len(df) <= 1:
+            return False
+        for i in range(len(df) - 1):
+            if df.iloc[i]['end_time'] > df.iloc[i + 1]['start_time']:
+                return True
+        return False
+    
+    if has_simple_overlaps(bounds_df):
         # Continue adjusting intervals until no overlaps are detected
-        while has_overlapping_intervals(bounds_df):
+        max_iterations = 50  # Reduced from 1000 to prevent excessive processing
+        iteration_count = 0
+        
+        while has_simple_overlaps(bounds_df) and iteration_count < max_iterations:
+            iteration_count += 1
+            prev_len = len(bounds_df)
+            initial_overlap_count = sum(1 for i in range(len(bounds_df) - 1) 
+                                      if bounds_df.iloc[i]['end_time'] > bounds_df.iloc[i + 1]['start_time'])
+            
             # Iterate through intervals, adjusting start_time to avoid overlap
             for i in range(1, len(bounds_df)):
                 # If the current interval starts before the previous interval ends
@@ -535,15 +596,40 @@ def handle_overlapping_indices(bounds_df):
                     # Adjust the start_time of the current interval
                     bounds_df.at[i, 'start_time'] = bounds_df.at[i-1, 'end_time']
             
-            # Drop any indices completely within earlier index
-            bounds_df = bounds_df[bounds_df['start_time'] <= bounds_df['end_time']].reset_index(drop=True)
+            # Drop any intervals where start >= end
+            bounds_df = bounds_df[bounds_df['start_time'] < bounds_df['end_time']].reset_index(drop=True)
+            
+            # Check if we're making progress
+            current_overlap_count = sum(1 for i in range(len(bounds_df) - 1) 
+                                      if bounds_df.iloc[i]['end_time'] > bounds_df.iloc[i + 1]['start_time'])
+            
+            # If no progress after a few iterations, switch to aggressive removal
+            if (len(bounds_df) == prev_len and 
+                current_overlap_count >= initial_overlap_count and 
+                iteration_count > 5):
+                logging.warning(f"Slow convergence in overlap resolution. Using aggressive overlap removal after {iteration_count} iterations.")
+                bounds_df = remove_overlaps_aggressively(bounds_df)
+                break
         
-        # Create IntervalIndex from the adjusted DataFrame
-        bounds_df['interval'] = pd.IntervalIndex.from_arrays(bounds_df['start_time'], bounds_df['end_time'])
-        print('- Overlapping Indices Removed')
-        #plot_intervals(bounds_df)
-    else:
-        bounds_df['interval'] = pd.IntervalIndex.from_arrays(bounds_df['start_time'], bounds_df['end_time'])
+        if iteration_count >= max_iterations:
+            logging.error(f"Maximum iterations ({max_iterations}) reached in overlap resolution. Using aggressive removal.")
+            bounds_df = remove_overlaps_aggressively(bounds_df)
+        
+        print(f'- Overlapping Indices Removed (took {iteration_count} iterations)')
+    
+    # Create IntervalIndex from the cleaned DataFrame with error handling
+    try:
+        if len(bounds_df) > 0:
+            bounds_df['interval'] = pd.IntervalIndex.from_arrays(bounds_df['start_time'], bounds_df['end_time'])
+        else:
+            bounds_df['interval'] = pd.IntervalIndex.from_arrays([], [])
+    except Exception as e:
+        logging.error(f"Failed to create IntervalIndex: {e}. Using aggressive overlap removal.")
+        bounds_df = remove_overlaps_aggressively(bounds_df)
+        if len(bounds_df) > 0:
+            bounds_df['interval'] = pd.IntervalIndex.from_arrays(bounds_df['start_time'], bounds_df['end_time'])
+        else:
+            bounds_df['interval'] = pd.IntervalIndex.from_arrays([], [])
     
     return bounds_df
 
@@ -748,22 +834,58 @@ def save_intermediate_results(dataset_id, turn_times, ticket_data, durations, ou
     
 
 
+def clear_failed_datasets(turn_time_archive):
+    """
+    Clear the failed datasets list to allow retrying all datasets.
+    """
+    failed_datasets_file = os.path.join(turn_time_archive, "failed_datasets.txt")
+    if os.path.exists(failed_datasets_file):
+        os.remove(failed_datasets_file)
+        print("Failed datasets list cleared. All datasets will be retried.")
+    else:
+        print("No failed datasets list found.")
+
 def turn_time_all_datasets(flight_track_archive, turn_time_archive):
     dataset_files = os.listdir(flight_track_archive)
+    # Sort by date with most recent first - files with valid dates come first, sorted in reverse chronological order
     dataset_files.sort(key=lambda filename: (extract_date_from_filename(filename) is None, extract_date_from_filename(filename)), reverse=True)
 
+    # Track failed datasets to avoid infinite retries
+    failed_datasets_file = os.path.join(turn_time_archive, "failed_datasets.txt")
+    failed_datasets = set()
+    
+    # Load previously failed datasets
+    if os.path.exists(failed_datasets_file):
+        try:
+            with open(failed_datasets_file, 'r') as f:
+                failed_datasets = set(line.strip() for line in f if line.strip())
+        except Exception as e:
+            logging.warning(f"Could not load failed datasets file: {e}")
+
+    processed_count = 0
+    skipped_count = 0
+    failed_count = 0
+    total_files = len(dataset_files)
+
     # Iterate Through Datasets
-    for dataset_file in dataset_files:
+    for i, dataset_file in enumerate(dataset_files, 1):
         try:
             # Extract dataset_id from dataset_file
             dataset_id = extract_dataset_id(dataset_file)
-            print(f'\n{dataset_id}')
+            print(f'\n[{i}/{total_files}] {dataset_id}')
+            
+            # Check if this dataset has failed before
+            if dataset_id in failed_datasets:
+                print(f"- Dataset {dataset_id} previously failed. Skipping to avoid infinite retries.")
+                skipped_count += 1
+                continue
             
             # Check if output file already exists
             output_filepath = os.path.join(turn_time_archive, f"{dataset_id}_intermediate_results.csv")
             if os.path.exists(output_filepath):
                 print(f"- Output for {dataset_id} already exists. Skipping.")
-                continue  # Skip to the next iteration if output file exists
+                skipped_count += 1
+                continue
 
             # Data Import and Preprocessing
             df = import_flight_track_df(flight_track_archive, dataset_id)
@@ -776,15 +898,42 @@ def turn_time_all_datasets(flight_track_archive, turn_time_archive):
             # Turn Identification and Analysis
             df = identify_turns(df, roll_threshold=5, duration_threshold=300, roll_percent=30, parallel_filter=True)
             turn_times = calculate_turn_times(df)
-            #turn_time_distribution(turn_times)
             
             # Calculate durations
             durations = calculate_flight_times(df, ticket_data)
 
             # Save Intermediate Results
             save_intermediate_results(dataset_id, turn_times, ticket_data, durations, turn_time_archive)
+            print(f"- Successfully processed {dataset_id}")
+            processed_count += 1
+            
         except Exception as e:
-            print(f'- Failed to calculate Turn Times for {dataset_id}. Error: {str(e)}')
+            error_msg = str(e)
+            print(f'- Failed to calculate Turn Times for {dataset_id}. Error: {error_msg}')
+            failed_count += 1
+            
+            # Add to failed datasets to prevent future retries
+            failed_datasets.add(dataset_id)
+            
+            # Save failed datasets list
+            try:
+                with open(failed_datasets_file, 'w') as f:
+                    for failed_id in sorted(failed_datasets):
+                        f.write(f"{failed_id}\n")
+            except Exception as save_error:
+                logging.warning(f"Could not save failed datasets file: {save_error}")
+    
+    # Print summary
+    print(f"\n=== Processing Summary ===")
+    print(f"Total files: {total_files}")
+    print(f"Successfully processed: {processed_count}")
+    print(f"Skipped (already exists or previously failed): {skipped_count}")
+    print(f"Failed: {failed_count}")
+    
+    if failed_datasets:
+        print(f"\nFailed datasets (will be skipped in future runs):")
+        for failed_id in sorted(failed_datasets):
+            print(f"  - {failed_id}")
 
 
 if __name__ == "__main__":
@@ -801,4 +950,8 @@ if __name__ == "__main__":
     os.makedirs(bounds_archive, exist_ok=True)
     os.makedirs(turn_time_archive, exist_ok=True)
     
-    turn_time_all_datasets(flight_track_archive, turn_time_archive)
+    # Check for command line arguments
+    if len(sys.argv) > 1 and sys.argv[1] == "clear_failed":
+        clear_failed_datasets(turn_time_archive)
+    else:
+        turn_time_all_datasets(flight_track_archive, turn_time_archive)
