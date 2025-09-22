@@ -11,6 +11,16 @@ Conway,United States,AR,CT,America/Chicago,KCXW,"Anadarko,Arkoma",API,"01 Hangar
 Corpus Christi,United States,TX,CT,America/Chicago,KCRP,Eagle Ford,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000002041019",No
 Dallas,United States,TX,CT,America/Chicago,KDAL,Barnett,"KCSI,API","01  Hangar,02 Hangar,03 Hangar,04 Hangar,05  Hangar,Cargo Received",No,Inactive,"4393825000000154015",No
 Denton,United States,TX,CT,America/Chicago,KDTO,Barnett,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,05 Hangar,06 Hangar,Cargo Received,01 Upload Station,02 Upload Station,03 Upload Station,04 Upload Station,05 Upload Station",No,Active,"4393825000001486041",No
+Denver,United States,CO,MT,America/Denver,
+Bakken,United States,ND,CT,America/Chicago,
+Colombia,Colombia,,COT,America/Bogota,
+Illinois,United States,IL,CT,America/Chicago,
+Michigan,United States,MI,ET,America/Detroit,
+Pennsylvania,United States,PA,ET,America/New_York,
+Piceance,United States,CO,MT,America/Denver,
+Richfield,United States,UT,MT,America/Denver,
+Uinta,United States,UT,MT,America/Denver,
+Wyoming,United States,WY,MT,America/Denver,
 Edinburg,United States,TX,CT,America/Chicago,KEBG,Eagle Ford,API,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000003711023",No
 Edmonton,Canada,,MT,America/Denver,CYEG,Alberta,EnviroTech,"01 Hangar,02 Hangar,03 Hangar,04 Hangar,Cargo Received",No,Inactive,"4393825000000154023",No
 Enid,United States,OK,CT,America/Chicago,KWDG,Anadarko,"KCSI,API","01 Hangar,02 Hangar,03 Hangar,04 Hangar,05 Hangar,06 Hangar,07 Hangar,08 Hangar,Cargo Received",No,Inactive,"4393825000000154027",No
